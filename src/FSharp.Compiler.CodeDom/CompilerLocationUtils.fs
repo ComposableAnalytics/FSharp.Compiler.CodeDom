@@ -22,49 +22,8 @@ module internal FSharpEnvironment =
             if String.IsNullOrEmpty s then None
             else Some s
 
-    let tryRegKey subKey =
-        Option.ofString
-            (try
-                downcast Microsoft.Win32.Registry.GetValue("HKEY_LOCAL_MACHINE\\"+subKey,null,null)
-             with e->
-                System.Diagnostics.Debug.Assert(false, sprintf "Failed in tryRegKey: %s" (e.ToString()))
-                null)
-
     let BinFolderOfDefaultFSharpCompiler =
         try
-            let key40wow = @"Software\Wow6432Node\Microsoft\FSharp\4.0\Runtime\v4.0"
-            let key31wow = @"Software\Wow6432Node\Microsoft\FSharp\3.1\Runtime\v4.0"
-            let key30wow = @"Software\Wow6432Node\Microsoft\FSharp\3.0\Runtime\v4.0"
-            let key20wow = @"Software\Wow6432Node\Microsoft\FSharp\2.0\Runtime\v4.0"
-            let key40 = @"Software\Microsoft\FSharp\4.0\Runtime\v4.0"
-            let key31 = @"Software\Microsoft\FSharp\3.1\Runtime\v4.0"
-            let key30 = @"Software\Microsoft\FSharp\3.0\Runtime\v4.0"
-            let key20 = @"Software\Microsoft\FSharp\2.0\Runtime\v4.0"
-
-            match tryRegKey key40 with
-            | Some r ->  Some r
-            | None ->
-            match tryRegKey key40wow with
-            | Some r ->  Some r
-            | None ->
-            match tryRegKey key31 with
-            | Some r ->  Some r
-            | None ->
-            match tryRegKey key31wow with
-            | Some r ->  Some r
-            | None ->
-            match tryRegKey key30 with
-            | Some r ->  Some r
-            | None ->
-            match tryRegKey key30wow with
-            | Some r ->  Some r
-            | None ->
-            match tryRegKey key20 with
-            | Some r ->  Some r
-            | None ->
-            match tryRegKey key20wow with
-            | Some r ->  Some r
-            | None ->
             Option.ofString(Environment.GetEnvironmentVariable("FSHARPINSTALLDIR"))
         with _ ->
             System.Diagnostics.Debug.Assert(false, "Error while determining default location of F# compiler")
